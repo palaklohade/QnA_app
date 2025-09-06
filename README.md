@@ -1,113 +1,154 @@
+
+
 # NextSum PDF
 
-Instantly summarize and ask questions about your PDF documents. Get the key information you need without the lengthy reading. This application provides a beautiful and intuitive interface to upload a PDF, parse its contents, and get intelligent answers from Google's Gemini API based on the document's context.
-
-## Features
-
--   **Secure & Private**: PDFs are parsed directly in your browser using `pdf.js`. The document's text is sent to a secure backend API, ensuring your API keys and the core logic are never exposed on the client-side. The document content is not stored on the server.
--   **Effortless PDF Upload**: A simple and clean interface to select your PDF files.
--   **Intelligent Q&A**: Ask questions in natural language and receive concise, context-aware answers based *solely* on the document's content.
--   **Powered by Gemini**: Leverages Google's powerful `gemini-2.5-flash` model via a secure backend for fast and accurate responses.
--   **Modern & Responsive UI**: A clean and visually appealing interface built with Next.js, React, and Tailwind CSS.
-
-## How It Works
-
-This application is built using Next.js, featuring a robust client-server architecture.
-
-1.  **PDF Parsing (Client-Side)**: When a user uploads a PDF, the application uses the [PDF.js](https://mozilla.github.io/pdf.js/) library to parse the document and extract its text content. This entire process happens locally within the user's browser.
-2.  **API Request (Client-to-Server)**: When the user submits a question, the extracted text from the PDF and the user's question are sent to a dedicated backend API route (`/api/generate`) within the Next.js application.
-3.  **Gemini API Call (Server-Side)**: The backend API route securely calls the Google Gemini API with the document context and the question. Your API key is safely stored on the server and is never exposed to the user's browser.
-4.  **Displaying Answers (Client-Side)**: The AI's response is sent back from the backend to the client and displayed in the user interface.
-
-## Tech Stack
-
--   **Full-Stack Framework**: [Next.js](https://nextjs.org/)
--   **Frontend**: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
--   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
--   **PDF Processing**: [PDF.js](https://mozilla.github.io/pdf.js/)
--   **AI**: [Google Gemini API](https://ai.google.dev/)
-
-## Getting Started
-
-To run this project locally, you will need Node.js, npm (or yarn/pnpm), and a Google Gemini API key.
-
-### Prerequisites
-
--   [Node.js](https://nodejs.org/) (version 18.x or newer recommended)
--   A **Google Gemini API key**. You can obtain one for free from [Google AI Studio](https://aistudio.google.com/app/apikey).
-
-### Local Setup
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/nextsum-pdf.git
-    cd nextsum-pdf
-    ```
-
-2.  **Install dependencies:**
-    Using npm:
-    ```bash
-    npm install
-    ```
-    Or using yarn:
-    ```bash
-    yarn install
-    ```
-
-3.  **Set up your environment variables:**
-    Create a new file named `.env.local` in the root of your project directory. Add your Gemini API key to this file:
-    ```
-    API_KEY=YOUR_GEMINI_API_KEY_HERE
-    ```
-    The Next.js application is configured to read your key from this file.
-
-4.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-
-5.  **Open in browser:**
-    Open your web browser and navigate to `http://localhost:3000`. You should now see the application running.
-
-##  Project Structure
-
-Here is an overview of the key files in this Next.js project:
-
-```
-.
-├── pages/
-│   ├── index.tsx           # The main page of the application (React component).
-│   ├── _app.tsx            # Custom App component to initialize pages.
-│   ├── _document.tsx       # Custom Document to augment <html> and <body> tags.
-│   └── api/
-│       └── generate.ts     # The backend API route that calls the Gemini API.
-├── components/             # Contains all reusable React UI components.
-│   ├── AnswerDisplay.tsx
-│   ├── PdfUploader.tsx
-│   └── QuestionForm.tsx
-├── hooks/
-│   └── usePdfParser.ts     # Custom React hook for client-side PDF parsing.
-├── .env.local              # File for your local environment variables (API key).
-└── package.json            # Project dependencies and scripts.
-```
-
-
-
-## Contributing
-
-Contributions are welcome!  
-If you’d like to improve this project, please follow these steps:
-
-1. Fork the repository  
-2. Create a new branch (`git checkout -b feature/your-feature-name`)  
-3. Make your changes and commit (`git commit -m "Add some feature"`)  
-4. Push to the branch (`git push origin feature/your-feature-name`)  
-5. Open a Pull Request  
+**NextSum PDF** is a mini application built with **Next.js** that allows users to upload a PDF and ask questions based on its content.  
+The application extracts text from PDFs, processes it with **Google's Gemini API**, and provides intelligent answers in real time.  
 
 ---
 
+## Objective
 
-## Developed By
+This project was built as part of a technical task to demonstrate skills in:  
+- Building a **Next.js full-stack application**.  
+- Working with **APIs for Q&A on document content**.  
+- Implementing **secure backend routes**.  
+- Designing a **clean, responsive frontend UI**.  
 
-**Palak Lohade**  
- Passionate about building AI-powered applications and modern web experiences.  
+The original task specified using OpenAI + embeddings + vector DB.  
+This implementation instead leverages **Gemini API** directly with the PDF’s parsed text, skipping explicit embedding/vector DB steps.  
+The overall flow and architecture remain consistent with the goal of **retrieval-based document Q&A**.
+
+---
+
+## Features
+
+-   **Secure & Private**: PDFs are parsed directly in your browser using `pdf.js`. Only extracted text is sent securely to the backend.  
+-   **Effortless PDF Upload**: A simple, intuitive interface for selecting and processing PDF files.  
+-   **Intelligent Q&A**: Ask questions in plain English and receive context-aware answers based solely on the PDF content.  
+-   **Powered by Gemini**: Uses Google’s `gemini-2.5-flash` model for fast and accurate responses.  
+-   **Modern & Responsive UI**: Built with Next.js, React, and Tailwind CSS for a smooth user experience.  
+
+---
+
+## How It Works
+
+1. **PDF Parsing (Client-Side)**  
+   - The uploaded PDF is parsed locally in the browser using [PDF.js](https://mozilla.github.io/pdf.js/).  
+   - Extracted text is prepared for Q&A.  
+
+2. **API Request (Client → Server)**  
+   - User’s question + extracted PDF text are sent to a secure backend API route (`/api/generate`).  
+
+3. **Gemini API Call (Server-Side)**  
+   - The backend securely calls the Gemini API with the question and document context.  
+   - Your API key is stored safely on the server and never exposed to the client.  
+
+4. **Answer Display (Client-Side)**  
+   - The AI’s response is sent back to the frontend and displayed instantly.  
+
+---
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/)  
+- **Frontend**: [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)  
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)  
+- **PDF Parsing**: [PDF.js](https://mozilla.github.io/pdf.js/)  
+- **AI Integration**: [Google Gemini API](https://ai.google.dev/)  
+
+---
+
+## Getting Started
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or newer recommended)  
+- A **Google Gemini API key** → [Get it here](https://aistudio.google.com/app/apikey).  
+
+### Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/nextsum-pdf.git
+   cd nextsum-pdf
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ````
+
+   or
+
+   ```bash
+   yarn install
+   
+
+3. **Set up environment variables**
+   Create a `.env.local` file in the project root:
+
+   ```env
+   API_KEY=YOUR_GEMINI_API_KEY_HERE
+   ````
+
+4. **Run the development server**
+
+   ```bash
+   npm run dev
+   ````
+
+5. **Open in browser**
+   Visit [http://localhost:3000](http://localhost:3000) to use the app.
+
+
+
+## Project Structure
+
+````
+.
+├── pages/
+│   ├── index.tsx         # Main UI for PDF upload and Q&A
+│   ├── _app.tsx          # Custom App setup
+│   ├── _document.tsx     # Custom Document structure
+│   └── api/
+│       └── generate.ts   # Backend API route calling Gemini
+├── components/
+│   ├── PdfUploader.tsx   # Upload UI
+│   ├── QuestionForm.tsx  # Input for questions
+│   └── AnswerDisplay.tsx # Output for answers
+├── hooks/
+│   └── usePdfParser.ts   # Client-side PDF parsing hook
+├── .env.local            # Local API key config
+└── package.json          # Project dependencies
+
+
+
+````
+## Approach
+
+* **Backend**
+
+  * A single secure API route (`/api/generate`) handles all queries.
+  * Instead of embeddings/vector DB, the Gemini API is directly used with the entire PDF content.
+  * This simplifies the architecture while maintaining reliable Q\&A functionality.
+
+* **Frontend**
+
+  * Provides a minimal, user-friendly interface.
+  * Upload PDFs → Ask Questions → View AI Answers.
+  * Uses React hooks and Tailwind for smooth interactions.
+
+---
+
+## Contribution
+
+Contributions are welcome! Fork the repo, make changes, and submit a pull request.
+
+---
+
+##  Author
+
+**Palak Lohade**
+ Passionate about building AI-powered applications and full-stack solutions.
+
+
